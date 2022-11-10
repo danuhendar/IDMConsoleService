@@ -2,7 +2,7 @@
 public class ThreadMain extends Thread {
 	IDMConsoleService idm;
      
-    public ThreadMain(int num){
+    public ThreadMain(String kode_cabang){
     	idm = new IDMConsoleService();
     }
     
