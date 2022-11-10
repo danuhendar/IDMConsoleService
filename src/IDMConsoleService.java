@@ -372,7 +372,7 @@ public class IDMConsoleService {
 							
 							
 							String res_message = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Parser_CHAT_MESSAGE,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
-		                    System.err.println("res_message : "+res_message);
+		                    //System.err.println("res_message : "+res_message);
 		                    byte[] convert_message = res_message.getBytes("US-ASCII");
 		                    byte[] bytemessage = gf.compress(convert_message);
 		                    String topic_dest = Parser_CHAT_MESSAGE;
