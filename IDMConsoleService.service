@@ -1,0 +1,13 @@
+[Unit]
+Description=IDMConsoleService
+
+[Service]
+WorkingDirectory=/home/idmcmd/IDMConsoleService
+ExecStart=/usr/bin/java -Xms128m -jar IDMConsoleService.jar
+User=root
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
