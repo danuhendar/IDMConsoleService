@@ -321,7 +321,7 @@ public class IDMConsoleService {
 		                    byte[] convert_message = res_message.getBytes("US-ASCII");
 		                    byte[] bytemessage = gf.compress(convert_message);
 		                    String topic_dest = "COMMAND/"+Parser_CHAT_MESSAGE+"/";
-		                    //System.out.println("TOPIC DEST : "+topic_dest);
+		                    System.out.println("TOPIC DEST : "+topic_dest);
 		                    gf.PublishMessageAndDocumenter(topic_dest, bytemessage, counter, res_message,1);
 		                    
 		                    //String topic_send_return_listener = Parser_CHAT_MESSAGE+"/ServiceProgramInstalled/";
@@ -445,6 +445,61 @@ public class IDMConsoleService {
 			
 		}
 	}
+	
+	public void Hardware_Info(String topic_setting,int qos_message_command) {
+		try {
+			String rtopic_validasi_command = topic_setting;
+			System.out.println("SUBS : "+rtopic_validasi_command);
+			client_transreport.subscribe(rtopic_validasi_command, qos_message_command, new IMqttMessageListener() {
+				@Override
+				public void messageArrived(final String topic, final MqttMessage message) throws Exception {
+						// ----------------------------- FILTER TOPIC NOT CONTAINS -------------------------------//
+						Date HariSekarang_run = new Date();
+						String payload = new String(message.getPayload());
+						String msg_type = "";
+						if(topic.contains("BYLINE")) {
+							
+						}else {
+							String message_ADT_Decompress = "";
+							try {
+								message_ADT_Decompress = gf.ADTDecompress(message.getPayload());
+								msg_type = "json";
+							} catch (Exception exc) {
+								message_ADT_Decompress = payload;
+								msg_type = "non json";
+							}
+							//System.out.println(message_ADT_Decompress);
+							//gf.WriteLog("MESSAGE RECEIVED : "+message_ADT_Decompress, true);
+							counter++;
+							UnpackJSON(message_ADT_Decompress);
+							gf.PrintMessage2("RECV > "+rtopic_validasi_command, counter, msg_type, topic, Parser_TASK, Parser_FROM,
+									Parser_TO, null, HariSekarang_run);
+							
+							
+							String hasil_insert_db = gf.InsTransReport(Parser_TASK, Parser_ID, Parser_SOURCE, Parser_COMMAND, Parser_OTP,
+									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
+									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
+									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
+							
+							
+							String res_message = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Parser_CHAT_MESSAGE,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
+		                    //System.err.println("res_message : "+res_message);
+		                    byte[] convert_message = res_message.getBytes("US-ASCII");
+		                    byte[] bytemessage = gf.compress(convert_message);
+		                    String topic_dest = Parser_CHAT_MESSAGE;
+		                    System.out.println("TOPIC DEST : "+topic_dest);
+		                    gf.PublishMessageAndDocumenter(topic_dest, bytemessage, counter, res_message,1);
+		                    
+		                    //String topic_send_return_listener = Parser_CHAT_MESSAGE+"/ServiceProgramInstalled/";
+		                    //subs_topic_return_from_listener(topic_send_return_listener,qos_message_command);
+						}
+						  
+				}
+			});
+		}catch(Exception exc) {
+			
+		}
+	}
 
 	public void Run() {
 		System.out.println("=================================          START         ==================================");
@@ -457,6 +512,8 @@ public class IDMConsoleService {
 			List_program_terinstall(topic_setting[1],qos_message_command);
 			Boot_time(topic_setting[2],qos_message_command);
 			Hibernate(topic_setting[3],qos_message_command);
+			Hardware_Info(topic_setting[4],qos_message_command);
+			
 		}catch(Exception exc){
 			exc.printStackTrace();
 		}
