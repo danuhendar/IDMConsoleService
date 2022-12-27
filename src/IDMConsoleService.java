@@ -482,16 +482,38 @@ public class IDMConsoleService {
 									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
 							
 							
+							//-- hardware info trigger -//
 							String res_message = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Parser_CHAT_MESSAGE,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
 		                    //System.err.println("res_message : "+res_message);
 		                    byte[] convert_message = res_message.getBytes("US-ASCII");
 		                    byte[] bytemessage = gf.compress(convert_message);
 		                    String topic_dest = Parser_CHAT_MESSAGE;
-		                    System.out.println("TOPIC DEST : "+topic_dest);
-		                    gf.PublishMessageAndDocumenter(topic_dest, bytemessage, counter, res_message,1);
+		                    System.out.println("TOPIC DEST HARDWARE INFO : "+topic_dest);
+		                    //gf.PublishMessageAndDocumenter(topic_dest, bytemessage, counter, res_message,1);
 		                    
-		                    //String topic_send_return_listener = Parser_CHAT_MESSAGE+"/ServiceProgramInstalled/";
-		                    //subs_topic_return_from_listener(topic_send_return_listener,qos_message_command);
+		                    //-- physical trigger -//
+		                    String Chat_message = "";
+		                    if(Parser_CHAT_MESSAGE.contains("HARDWARE_INFO/G")) {
+		                    	Chat_message = Parser_CHAT_MESSAGE.split("/")[1]+"/";
+		                    }else if(Parser_CHAT_MESSAGE.substring(0,1).equals("G")){
+		                    	Chat_message = Parser_CHAT_MESSAGE;
+		                    }else {
+		                    	Chat_message = Parser_CHAT_MESSAGE.replace("HARDWARE_INFO", "COMMAND");
+		                    }
+		                    Parser_TASK = "BC_POWERSHELL_COMMAND";
+		                    Parser_COMMAND = "Get-PhysicalDisk  | Select-Object -Property DeviceId,Model,MediaType,BusType | ConvertTo-Csv -NoTypeInformation";
+		                    Parser_FROM = "ServicePhysicalDisk";
+							String res_message_physical_disk = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Chat_message,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
+		                    System.err.println("res_message : "+res_message);
+		                    byte[] convert_message_physical_disk = res_message_physical_disk.getBytes("US-ASCII");
+		                    byte[] bytemessage_physical_disk = gf.compress(convert_message_physical_disk);
+		                    
+		                    String topic_dest_physical_disk = Chat_message;
+		                    System.out.println("TOPIC DEST PHYSICAL DISK : "+topic_dest_physical_disk);
+		                    //gf.PublishMessageAndDocumenter(topic_dest_physical_disk, bytemessage_physical_disk, counter, res_message_physical_disk,1);
+		                    
+		                    
+		                    
 						}
 						  
 				}
