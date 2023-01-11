@@ -500,17 +500,20 @@ public class IDMConsoleService {
 		                    }else {
 		                    	Chat_message = Parser_CHAT_MESSAGE.replace("HARDWARE_INFO", "COMMAND");
 		                    }
+		                    
 		                    Parser_TASK = "BC_POWERSHELL_COMMAND";
-		                    Parser_COMMAND = "Get-PhysicalDisk  | Select-Object -Property DeviceId,Model,MediaType,BusType | ConvertTo-Csv -NoTypeInformation";
+		                    Parser_COMMAND = "$disk = Get-PhysicalDisk | Select-Object -Property DeviceId,Model,MediaType,BusType | ConvertTo-Csv  -Delimiter ',' -NoTypeInformation | select -skip 1 ; $vol = Get-Volume | Select-Object -Property DriveLetter,FileSystemType,DriveType,HealthStatus,OperationalStatus,SizeRemaining,Size | ConvertTo-Csv -Delimiter ',' -NoTypeInformation | select -skip 1 ;$disk,$vol;";
+		                    		//"$disk = Get-PhysicalDisk | Select-Object -Property DeviceId,Model,MediaType,BusType  |  ConvertTo-Csv -NoTypeInformation;$vol = Get-Volume | Select-Object -Property DriveLetter,FileSystemType,DriveType,HealthStatus,OperationalStatus,SizeRemaining,Size | ConvertTo-Csv -NoTypeInformation; Write-Host \"\" $disk,$vol;";
+		                    		//"Get-PhysicalDisk  | Select-Object -Property DeviceId,Model,MediaType,BusType,HealthStatus | ConvertTo-Csv -NoTypeInformation";
 		                    Parser_FROM = "ServicePhysicalDisk";
 							String res_message_physical_disk = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Chat_message,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
 		                    System.err.println("res_message_physical_disk : "+res_message_physical_disk);
 		                    byte[] convert_message_physical_disk = res_message_physical_disk.getBytes("US-ASCII");
 		                    byte[] bytemessage_physical_disk = gf.compress(convert_message_physical_disk);
-		                    
 		                    String topic_dest_physical_disk = Chat_message;
 		                    System.out.println("TOPIC DEST PHYSICAL DISK : "+topic_dest_physical_disk);
 		                    gf.PublishMessageAndDocumenter(topic_dest_physical_disk, bytemessage_physical_disk, counter, res_message_physical_disk,1);
+		                    
 		                    
 		                    
 		                    
