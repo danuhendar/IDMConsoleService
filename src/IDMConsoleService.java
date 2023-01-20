@@ -302,7 +302,7 @@ public class IDMConsoleService {
 								message_ADT_Decompress = payload;
 								msg_type = "non json";
 							}
-							//System.out.println(message_ADT_Decompress);
+							System.out.println(message_ADT_Decompress);
 							//gf.WriteLog("MESSAGE RECEIVED : "+message_ADT_Decompress, true);
 							counter++;
 							UnpackJSON(message_ADT_Decompress);
@@ -315,13 +315,15 @@ public class IDMConsoleService {
 									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
 									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
 							
-							
+							String topic_dest = "COMMAND/"+Parser_CHAT_MESSAGE+"/";
+							Parser_CHAT_MESSAGE = topic_dest;
+			                System.out.println("TOPIC DEST : "+topic_dest);
+			                    
 							String res_message = gf.CreateMessage(Parser_TASK,Parser_ID,Parser_SOURCE,Parser_COMMAND,Parser_OTP,Parser_TANGGAL_JAM,Parser_VERSI,Parser_HASIL,Parser_FROM,Parser_TO,Parser_SN_HDD,Parser_IP_ADDRESS,Parser_STATION,Parser_CABANG,"",Parser_NAMA_FILE,Parser_CHAT_MESSAGE,Parser_REMOTE_PATH,Parser_LOCAL_PATH,Parser_SUB_ID);
 		                    //System.err.println("res_message_otp : "+res_message);
 		                    byte[] convert_message = res_message.getBytes("US-ASCII");
 		                    byte[] bytemessage = gf.compress(convert_message);
-		                    String topic_dest = "COMMAND/"+Parser_CHAT_MESSAGE+"/";
-		                    System.out.println("TOPIC DEST : "+topic_dest);
+		                   
 		                    gf.PublishMessageAndDocumenter(topic_dest, bytemessage, counter, res_message,1);
 		                    
 		                    //String topic_send_return_listener = Parser_CHAT_MESSAGE+"/ServiceProgramInstalled/";
