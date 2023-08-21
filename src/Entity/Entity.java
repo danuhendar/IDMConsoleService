@@ -1,3 +1,4 @@
+package Entity;
 
 public class Entity {
 	
@@ -18,13 +19,13 @@ public class Entity {
     String pass_database;
     String port_database;
     String nama_database;
-    String id_reporter;
-    String cabang;
+    static String id_reporter;
+    static String cabang;
     String topic;
     String tampilkan_query_console;
-    String batas_menit;
+    static String batas_menit;
     
-    public String getBatasMenit() {
+    public static String getBatasMenit() {
 		return batas_menit;
 	}
 
@@ -42,7 +43,7 @@ public class Entity {
 			
     
     
-	public String getCabang() {
+	public static String getCabang() {
 		return cabang;
 	}
 
@@ -194,7 +195,7 @@ public class Entity {
 		this.nama_database = nama_database;
 	}
 
-	public String getId_reporter() {
+	public static String getId_reporter() {
 		return id_reporter;
 	}
 

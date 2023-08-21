@@ -1,3 +1,4 @@
+package Scheduler;
 
 public class CheckThread extends Thread {
 	CheckActivity act;
